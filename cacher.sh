@@ -82,8 +82,8 @@ elif [[ -n "$PLUGIN_RESTORE" && "$PLUGIN_RESTORE" == "true" ]]; then
     for source in "${SOURCES[@]}"; do
         if [ -d "/cache/$CACHE_PATH/$source" ]; then
             echo "Restoring cache for folder $source..."
-            mkdir -p "$source" && \
-                rsync -aHA --delete "/cache/$CACHE_PATH/$source/" "$source"
+            cache_dir="/cache/${CACHE_PATH}/${source}/*"
+            rm -rf "$source" && mkdir -p "$source" && cp -r $cache_dir "$source/"
         elif [ -f "/cache/$CACHE_PATH/$source" ]; then
             echo "Restoring cache for file $source..."
             source_dir=$(dirname $source)
