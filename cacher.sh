@@ -45,8 +45,14 @@ if [[ -n "$PLUGIN_REBUILD" && "$PLUGIN_REBUILD" == "true" ]]; then
     for source in "${SOURCES[@]}"; do
         if [ -d "$source" ]; then
             echo "Rebuilding cache for folder $source..."
-            mkdir -p "/cache/$CACHE_PATH/$source" && \
-                rsync -aHA --delete "$source/" "/cache/$CACHE_PATH/$source"
+
+            source_dir="$source/*"
+            cache_dir="/cache/${CACHE_PATH}/${source}/"
+
+            rm -rf "/cache/$CACHE_PATH/$source" && \
+                mkdir -p "/cache/$CACHE_PATH/$source" && \
+                cp -rf $source_dir $cache_dir 
+            
         elif [ -f "$source" ]; then
             echo "Rebuilding cache for file $source..."
             source_dir=$(dirname $source)
@@ -83,7 +89,7 @@ elif [[ -n "$PLUGIN_RESTORE" && "$PLUGIN_RESTORE" == "true" ]]; then
         if [ -d "/cache/$CACHE_PATH/$source" ]; then
             echo "Restoring cache for folder $source..."
             cache_dir="/cache/${CACHE_PATH}/${source}/*"
-            rm -rf "$source" && mkdir -p "$source" && cp -r $cache_dir "$source/"
+            rm -rf "$source" && mkdir -p "$source" && cp -rf $cache_dir "$source/"
         elif [ -f "/cache/$CACHE_PATH/$source" ]; then
             echo "Restoring cache for file $source..."
             source_dir=$(dirname $source)
